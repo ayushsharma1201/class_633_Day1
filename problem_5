@@ -1,1 +1,87 @@
 \--Ques:-- 
+
+\--Code:--
+
+#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+// Base class
+class Employee {
+protected:
+    string name;
+    int id;
+    double salary;
+
+public:
+    Employee(string empName, int empId, double empSalary) 
+        : name(empName), id(empId), salary(empSalary) {}
+
+    virtual void displayDetails() const {
+        cout << "Employee ID: " << id << "\nName: " << name << "\nSalary: $" << salary << endl;
+    }
+
+    virtual ~Employee() {}
+};
+
+// Derived class: Manager
+class Manager : public Employee {
+private:
+    int teamSize;
+
+public:
+    Manager(string empName, int empId, double empSalary, int teamSize)
+        : Employee(empName, empId, empSalary), teamSize(teamSize) {}
+
+    void displayDetails() const override {
+        cout << "Manager Details:\n";
+        Employee::displayDetails();
+        cout << "Team Size: " << teamSize << endl;
+    }
+};
+
+// Derived class: Engineer
+class Engineer : public Employee {
+private:
+    string specialization;
+
+public:
+    Engineer(string empName, int empId, double empSalary, string specialization)
+        : Employee(empName, empId, empSalary), specialization(specialization) {}
+
+    void displayDetails() const override {
+        cout << "Engineer Details:\n";
+        Employee::displayDetails();
+        cout << "Specialization: " << specialization << endl;
+    }
+};
+
+// Helper function to display all employees
+void displayAllEmployees(const vector<Employee*>& employees) {
+    for (const auto& emp : employees) {
+        emp->displayDetails();
+        cout << "-----------------------------" << endl;
+    }
+}
+
+int main() {
+    // Create a list of employees
+    vector<Employee*> employees;
+
+    employees.push_back(new Manager("Alice", 101, 90000, 10));
+    employees.push_back(new Engineer("Bob", 102, 70000, "Software Development"));
+    employees.push_back(new Engineer("Charlie", 103, 75000, "Network Engineering"));
+
+    // Display details of all employees
+    displayAllEmployees(employees);
+
+    // Clean up dynamically allocated memory
+    for (auto& emp : employees) {
+        delete emp;
+    }
+
+    return 0;
+}
+
