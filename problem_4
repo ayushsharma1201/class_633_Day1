@@ -1,0 +1,57 @@
+\--Ques:-- write c++ program to implement polymorphism in banking transaction.
+
+\Code:--\
+
+#include <iostream>
+#include <vector>
+#include <memory>
+using namespace std;
+class Transaction {
+public:
+    virtual void process(double &balance) const = 0; 
+    virtual void display() const = 0; 
+    virtual ~Transaction() {}
+};
+class Deposit : public Transaction {
+private:
+    double amount;
+public:
+    Deposit(double amt) : amount(amt) {}
+    void process(double &balance) const override {
+        balance += amount;
+        cout << "Deposited: " << amount << "\n";
+    }
+    void display() const override {
+        cout << "Deposit of " << amount << "\n";
+    }
+};
+class Withdrawal : public Transaction {
+private:
+    double amount;
+public:
+    Withdrawal(double amt) : amount(amt) {}
+void process(double &balance) const override {
+        if (balance >= amount) {
+            balance -= amount;
+            cout << "Withdrew: " << amount << "\n";
+        } else {
+            cout << "Insufficient funds for withdrawal of " << amount << "\n";
+        }
+    }
+    void display() const override {
+        cout << "Withdrawal of " << amount << "\n";
+    }
+};
+int main() {
+    double accountBalance = 100.0; 
+    vector<shared_ptr<Transaction>> transactions; 
+    transactions.push_back(make_shared<Deposit>(7500));
+    transactions.push_back(make_shared<Withdrawal>(200));
+    transactions.push_back(make_shared<Withdrawal>(15000));
+    for (const auto &transaction : transactions) {
+        transaction->display();
+        transaction->process(accountBalance);
+        cout << "Updated Balance: " << accountBalance << "\n\n";
+    }
+    return 0;
+}
